@@ -6,8 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    {% if lcm %}
-    <h2>The lowest common multiple of {{ result1 }} and {{ result2 }} is {{ lcm }} </h2>
+    {% if result %}
+    <h2>The lowest common multiple of {{ var1 }} and {{ var2 }} is {{ result }} </h2>
     {% else %}
     <h2> Since this is a GET request, LCM has not been calculated</h2>
     {% endif %}

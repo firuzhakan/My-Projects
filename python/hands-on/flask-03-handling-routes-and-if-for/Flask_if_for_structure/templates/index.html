@@ -7,11 +7,10 @@
     <title>Document</title>
 </head>
 <body>
-    {% if total %}
-    <h2>Total of three numbers is {{ total }}</h2>
+    {% if message %}
+    <h1> {{ message }} </h1>
     {% else %}
-    <h2>Since this is GET request, Total hasn't been calculated</h2>
+    <h1> "There is no message in here..."</h1> 
     {% endif %}
-
 </body>
 </html>
