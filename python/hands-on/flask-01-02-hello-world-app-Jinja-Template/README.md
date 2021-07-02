@@ -99,7 +99,7 @@ Followings are some of features of Flask Framework;
 
 - Create an `body.html` file under templates folder.
 
-- Create a function named `number` which sents number `num1` and `num2` and sum of them to the `index.html`. Use these variables into the `body.html` file. Assign a URL route the `number` function with decorator `@app.route('/sum')`.
+- Create a function named `number` which sends number `num1` and `num2` and sum of them to the `index.html`. Use these variables into the `body.html` file. Assign a URL route the `number` function with decorator `@app.route('/sum')`.
 
 - run the application in debug mode
 
