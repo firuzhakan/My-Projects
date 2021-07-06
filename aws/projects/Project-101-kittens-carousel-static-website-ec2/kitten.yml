@@ -22,7 +22,6 @@ Resources:
  WebServerHost:
     Type: AWS::EC2::Instance
     Properties:
-
       ImageId: ami-0ab4d1e9cf9a1215a
       InstanceType: t2.micro
       KeyName: ec2-key
@@ -37,10 +36,19 @@ Resources:
             #! /bin/bash
             yum update -y
             yum install httpd -y 
+            FOLDER="https://raw.githubusercontent.com/firuzhakan/my-projects/main/aws/projects/Project-101-kittens-carousel-static-website-ec2/static-web"
             cd /var/www/html
-
-      Volumes:
-        Volumes
-
+            wget $FOLDER/index.html
+            wget $FOLDER/cat0.jpg
+            wget $FOLDER/cat1.jpg
+            wget $FOLDER/cat2.jpg
+            wget $FOLDER/cat3.png
+            systemctl start httpd
+            systemctl enable httpd
    
 Outputs:
+  WebsiteURL:
+    Value: !Sub 
+      - http://${PublicAddress}
+      - PublicAddress: !GetAtt WebServerHost.PublicDnsName
+    Description: Kittens Carousel Application URL 
