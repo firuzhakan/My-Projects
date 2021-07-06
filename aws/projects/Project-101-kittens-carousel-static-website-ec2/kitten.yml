@@ -29,7 +29,7 @@ Resources:
         - !Ref WebServerSecurityGroup
       Tags:
        - Key: Name 
-         Value: Web Server of ${AWS::StackName} Stack
+         Value: !Sub Web Server of ${AWS::StackName} Stack
       UserData: 
         Fn::Base64:
           !Sub |
@@ -44,8 +44,7 @@ Resources:
             wget $FOLDER/cat2.jpg
             wget $FOLDER/cat3.png
             systemctl start httpd
-            systemctl enable httpd
-   
+            systemctl enable httpd   
 Outputs:
   WebsiteURL:
     Value: !Sub 
