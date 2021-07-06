@@ -24,11 +24,10 @@ Resources:
     Properties:
 
       ImageId: ami-0ab4d1e9cf9a1215a
-      InstanceInitiatedShutdownBehavior: "String"
       InstanceType: t2.micro
       KeyName: ec2-key
       SecurityGroupIds:
-        !Ref WebServerSecurityGroup
+        - !Ref WebServerSecurityGroup
       Tags:
        - Key: Name 
          Value: Web Server of ${AWS::StackName} Stack
@@ -39,7 +38,7 @@ Resources:
             yum update -y
             yum install httpd -y 
             cd /var/www/html
-            
+
       Volumes:
         Volumes
 
