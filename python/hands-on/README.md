@@ -8,7 +8,7 @@ List of hands-on trainings within Python workshop as follows;
 
 - [Hands-on Flask-04    : Using Get-Post Methods](./flask-04-handling-forms-POST-GET-Methods/README.md)
 
-- [Hands-on Flask-05    : Handling Forms and SQL with Flask Web Application](./flask-05-Handling-Forms-and-SQL-with-Flask-Web-Application/README.md)
+- [Hands-on Flask-05    : Handling SQL with Flask Web Application](./flask-05-Handling-SQL-with-Flask-Web-Application/README.md)
 
 
 
