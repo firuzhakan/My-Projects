@@ -1,101 +1,83 @@
-# Import Flask modules
-from flask import Flask, redirect, url_for, render_template, request
+## request kutucuklara yazılan formları çekmeye yarıyor
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-
-# Create an object named app
 app = Flask(__name__)
 
-# Configure sqlite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./users.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+## sqllite için gerekli environmentler https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./email.db' ##sqllite ile çalısırken extra bir yere baglanmaya gerek yok. mysql de servere baglanılıyor
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  ###developrler ıcın bır satır Trueya cevırlırse ıkaz alınıyor
+db = SQLAlchemy(app)         
 
-# Create users table within MySQL db and populate with sample data
-# Execute the code below only once.
-# Write sql code for initializing users table..
-drop_table = 'DROP TABLE IF EXISTS users;'
-users_table = """
+# users tablosu olusturuyoruz...sql komutlarıyla tablo olusturuyoruz
+drop_table = 'DROP TABLE IF EXISTS users;' ### users ısımlı tablo olusturmak ıstıyoruz.bu satır daha once varsa boyle bı tablo siler
+users_table = """                           
 CREATE TABLE users(
 username VARCHAR NOT NULL PRIMARY KEY,
 email VARCHAR);
 """
-data = """
+data= """
 INSERT INTO users
 VALUES
-	("Buddy Rich", "buddy@clarusway.com" ),
-	("Candido", "candido@clarusway.com"),
-	("Charlie Byrd", "charlie.byrd@clarusway.com");
+    ("Firuz Hakan", "firuzhakan@amazon.com"),
+    ("Fatma", "fatma@google.com"),
+    ("Nezih", "nezih@tesla.com");
 """
-
-db.session.execute(drop_table)
+## yukardakı sql sadece 1 defa ıcra edilir..yanı 2.defa çalıstıracagın zaman silinir.sürekli calıstıracaksak kodları sılmek lazım fıruzhakan satırlarını ustunu
+db.session.execute(drop_table)   ## bu komutlarla bunu icra et
 db.session.execute(users_table)
 db.session.execute(data)
-db.session.commit()
+db.session.commit()              ## en sonda commit ediyor
 
-# Write a function named `find_emails` which find emails using keyword from the user table in the db,
-# and returns result as tuples `(name, email)`.
-def find_emails(keyword):
+def find_email(keyword):       ## % ler başı ve sonundakıne bakmadan kelımeyı buluyor
     query = f"""
     SELECT * FROM users WHERE username like '%{keyword}%';
     """
     result = db.session.execute(query)
-    user_emails = [(row[0], row[1]) for row in result]
-    # if there is no user with given name in the db, then give warning
+    user_emails = [(row[0], row[1]) for row in result] # yukardakı firuzhakan row0 mailim row1
     if not any(user_emails):
-        user_emails = [('Not found.', 'Not Found.')]
+        user_emails = [("Not Found", "Not Found")]
     return user_emails
 
-# Write a function named `insert_email` which adds new email to users table the db.
-def insert_email(name, email):
+
+# yeni emailleri users tablosuna girecek ınssert email tanımlayacagız
+def insert_email(name,email):
     query = f"""
-    SELECT * FROM users WHERE username like '{name}';
+    SELECT * FROM users WHERE username like '{name}' 
     """
     result = db.session.execute(query)
-    # default text
-    response = 'Error occurred..'
-    # if user input are None (null) give warning
-    if name == None or email == None:
-        response = 'Username or email can not be emtpy!!'
-    # if there is no same user name in the db, then insert the new one
-    elif not any(result):
+    response = ''
+    if name == None or email == None:  ## boş bırakamazsın 
+        response = 'Username or email can not be empty!!'
+    elif not any(result):   ##yukardakılerden farklı ise (nezih,fatma insert et database)
         insert = f"""
         INSERT INTO users
         VALUES ('{name}', '{email}');
         """
         result = db.session.execute(insert)
         db.session.commit()
-        response = f'User {name} added successfully'
-    # if there is user with same name, then give warning
+        response = f"User {name} and {email} have been added successfully"
     else:
-        response = f'User {name} already exits.'
+        response = f"User {name} already exist"  ##mükererr girişi önlüyor. firuzhakan zaten var
     return response
 
-# Write a function named `emails` which finds email addresses by keyword using `GET` and `POST` methods,
-# using template files named `emails.html` given under `templates` folder
-# and assign to the static route of ('/')
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods = ['POST', 'GET'])  ## anasayfamızı decorete edıyouz
 def emails():
-    if request.method == 'POST':
-        user_name = request.form['username']
-        user_emails = find_emails(user_name)
-        return render_template('emails.html', name_emails=user_emails, keyword=user_name, show_result=True)
+    if request.method == 'POST':  ## requstle gıılıen degerı cekıp deeğişkene atıyoruz
+        user_app_name = request.form['user_keyword']
+        user_emails = find_email(user_app_name)
+        return render_template('emails.html', show_result = True, keyword = user_app_name, name_emails = user_emails)
     else:
-        return render_template('emails.html', show_result=False)
+        return render_template('emails.html', show_result = False) 
 
-# Write a function named `add_email` which inserts new email to the database using `GET` and `POST` methods,
-# using template files named `add-email.html` given under `templates` folder
-# and assign to the static route of ('add')
 @app.route('/add', methods=['GET', 'POST'])
 def add_email():
     if request.method == 'POST':
-        user_name = request.form['username']
-        user_email = request.form['useremail']
-        result = insert_email(user_name, user_email)
-        return render_template('add-email.html', result=result, show_result=True)
+        user_app_name = request.form['username']
+        user_app_email = request.form['useremail']
+        result_app = insert_email(user_app_name, user_app_email)
+        return render_template('add-email.html', result_html=result_app, show_result=True)
     else:
-        return render_template('add-email.html', show_result=False)
-
-# Add a statement to run the Flask application which can be reached from any host on port 80.
+        return render_template('add-email.html', show_result=False)   
 if __name__ == '__main__':
     app.run(debug=True)
-   #app.run(host='0.0.0.0', port=80)
+    # app.run(host='0.0.0.0', port=80)     
