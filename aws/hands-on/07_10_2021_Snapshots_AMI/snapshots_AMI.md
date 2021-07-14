@@ -43,18 +43,18 @@ Part 1 - Creating an Image from the Snapshot of the Nginx Server and Launching a
   #### b. User data (paste it for Nginx)
 
   ```text
-  #!/bin/bash
+#!/bin/bash
 
-  yum update -y
-  amazon-linux-extras install nginx1.12
-  yum install wget -y
-  cd /usr/share/nginx/html
-  chmod o+w /usr/share/nginx/html
-  rm index.html
-  wget https://raw.githubusercontent.com/awsdevopsteam/route-53/master/index.html
-  wget https://raw.githubusercontent.com/awsdevopsteam/route-53/master/ken.jpg
-  systemctl start nginx
-  systemctl enable nginx
+yum update -y
+amazon-linux-extras install nginx1.12
+yum install wget -y
+cd /usr/share/nginx/html
+chmod o+w /usr/share/nginx/html
+rm index.html
+wget https://raw.githubusercontent.com/awsdevopsteam/route-53/master/index.html
+wget https://raw.githubusercontent.com/awsdevopsteam/route-53/master/ken.jpg
+systemctl start nginx
+systemctl enable nginx
   ```
 
   c. Tag: Since "Data Lifecycle Manager" work based on tags, we use tag to customize Instance!!!!!!!! 
