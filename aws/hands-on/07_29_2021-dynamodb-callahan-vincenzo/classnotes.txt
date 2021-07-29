@@ -1,0 +1,25 @@
+AWS Databases Session
+NoSQL(DynamoDB) Service 
+7/29/2021
+
+Instructor: Callahan - Vincenzo
+
+Session - 1
+
+Session starts at 7pm EST
+
+CRUD (CREATE, READ OR RETRIEVE, UPDATE, DELETE)
+
+
+
+  
+  References:
+  - https://docs.aws.amazon.com/redshift/latest/dg/welcome.html
+  - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html
+  - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/samples/sampledata.zip
+  - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStartedDynamoDB.html
+  - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.html
+  - https://www.youtube.com/watch?v=2FaWOavwygg
+  - https://aws.amazon.com/dynamodb/faqs/
+
+
