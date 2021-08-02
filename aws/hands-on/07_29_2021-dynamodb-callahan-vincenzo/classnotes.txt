@@ -8,11 +8,27 @@ Session - 1
 
 Session starts at 7pm EST
 
-CRUD (CREATE, READ OR RETRIEVE, UPDATE, DELETE)
+
+Break Until 8pm EST
+
+Break Until 9pm EST
 
 
+
+Encryption at Rest -> Data is in block device and encrypted
+Encryption in Transit -> Data is moving from one server to another and encrypted
+
+Populate -> Insert data in to the tables
+
+CRUD (Create, Read or Retrieve, Update, Delete) Operations
+
+aws dynamodb batch-write-item --request-items file://ProductCatalog.json
+aws dynamodb batch-write-item --request-items file://Forum.json
+aws dynamodb batch-write-item --request-items file://Thread.json
+aws dynamodb batch-write-item --request-items file://Reply.json
 
   
+
   References:
   - https://docs.aws.amazon.com/redshift/latest/dg/welcome.html
   - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html
@@ -21,5 +37,6 @@ CRUD (CREATE, READ OR RETRIEVE, UPDATE, DELETE)
   - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.html
   - https://www.youtube.com/watch?v=2FaWOavwygg
   - https://aws.amazon.com/dynamodb/faqs/
+  - https://docs.aws.amazon.com/cli/latest/reference/g
 
 
