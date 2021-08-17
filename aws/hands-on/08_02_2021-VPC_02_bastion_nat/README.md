@@ -32,8 +32,10 @@ Network         : clarus-vpc-a
 Subnet          : clarus-az1b-public-subnet
 Security Group  : 
     Sec.Group Name : Public Sec.group(Bastion Host)
-    Rules          : TCP --- > 22 ---> Anywhere
-                   : All ICMP IPv4  ---> Anywhere
+    Rules          : TCP  ---> 22 ---> Anywhere
+                   : All ICMP IPv4 ---> Anywhere
+                     HTTP  ---> 80 ---> Anywhere
+                     HTTPs ---> 443 ---> Anywhere
 Tag             :
     Key         : Name
     Value       : Public EC2 (Bastion Host)
@@ -54,14 +56,12 @@ Rules        : TCP --- > 22 ---> Anywhere
 
 - go to your local terminal
 
-- add your private key to the ssh agent on your `localhost`. ``ssh-agent is a program that runs in background and stores your keys in memory`.
-
 - Enable ssh-agent (start the ssh-agent in the background)
 
 ```bash
 eval "$(ssh-agent)"
 ```
--  Add the your private ssh key to the ssh-agent.
+- Add your private key to the ssh agent on your `localhost`. `ssh-agent is a program that runs in background and stores your keys in memory`.
 
 ```bash
 ssh-add ./[your pem file name]
