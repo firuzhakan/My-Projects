@@ -539,10 +539,6 @@ kubectl apply -f web-flask.yaml
 
 - Services within the same Namespace find other Services just by their names. 
 
-- If we add a Service `redis-master` in `my-ns` Namespace, all Pods in the same `my-ns` Namespace lookup the Service just by its name, `redis-master`.
-
-- Pods from other Namespaces, such as `test-ns`, lookup the same Service by adding the respective Namespace as a suffix, such as `redis-master.my-ns` or providing the `FQDN` of the service as `redis-master.my-ns.svc.cluster.local`.
-
 - Let's understand this issue with an example.
 
 - First of all remove whole deployment and service into the default namespace
@@ -551,21 +547,21 @@ kubectl apply -f web-flask.yaml
 kubectl delete -f .
 ```
 
-- Create a namespace and name it `my_space`.
+- Create a namespace and name it `demo`.
 
 ```bash
-kubectl create namespace my_space
+kubectl create namespace demo
 ```
 
-- Create a deployment inside the `my_space` namespace.
+- Create a deployment inside the `demo` namespace with `web-flask.yaml` file.
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web-flask-deploy
-  namespace: my_space
+  namespace: demo
 spec:
-  replicas: 6
+  replicas: 3
   selector:
     matchLabels:
       app: web-flask
@@ -589,13 +585,13 @@ spec:
         ports:
         - containerPort: 5000
 ```
-- Create a service inside the `my_space` namespace.
+- Create a service inside the `demo` namespace.
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: web-flask-svc
-  namespace: my_space
+  namespace: demo
   labels:
     app: web-flask
 spec:
@@ -606,7 +602,6 @@ spec:
     nodePort: 30036
   selector:
     env: front-end
-    version: v1
 ```
 - create deployment and service
 ```bash
@@ -618,29 +613,29 @@ kubectl apply -f .
 kubectl get ns
 ```
 
-- Lets see the all objects within my_space namespace and default namespace
+- Lets see the all objects within demo namespace and default namespace
 ```bash
-kubectl get deploy -n my_space
-kubectl get pod -n my_space
-kubectl get svc -n my_space
+kubectl get deploy -n demo
+kubectl get pod -n demo
+kubectl get svc -n demo
 kubectl get pod
 kubectl get svc
 ```
 
-- log into the container and curl the `web-flask-svc` inside `my_space` namespace.
+- log into the container and curl the `web-flask-svc` inside `demo` namespace.
 
 ```bash
 kubectl exec -it forcurl -- sh
-/ # ping web-flask-svc.my_space
+/ # curl web-flask-svc.demo:3000
 
 or we can use `FQDN`.
 
-/ #  ping web-flask-svc.my_space.svc.cluster.local
+/ #  curl web-flask-svc.demo.svc.cluster.local:3000
 ```
 
 - Delete all objects.
 
 ```bash
 kubectl delete -f .
-kubectl delete ns my_space
+kubectl delete ns demo
 ```
