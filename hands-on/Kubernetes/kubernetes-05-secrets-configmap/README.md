@@ -45,7 +45,7 @@ kubectl get no
 ```bash
 # Create files needed for the rest of the example.
 echo -n 'admin' > ./username.txt
-echo -n '1f2d1e2e67df' > ./password.txt
+echo -n '1f2d1e2e67df' > ./password.txt   # -n yenı satıra gıtmıyor onu da karakter olarak saklamamı ıcın
 ```
 
 - The kubectl create secret command packages these files into a Secret and creates the object on the API server. The name of a Secret object must be a valid DNS subdomain name.
