@@ -113,7 +113,7 @@ press "i" to edit.
 FROM node:12-alpine
 WORKDIR /app
 COPY . .
-RUN yarn install --production
+RUN yarn install --production                       #bir projeyle ılgili butun dependincieleri indiriyor
 CMD ["node", "/app/src/index.js"]
 ```
 - Press "ESC" and ":wq " to save.
@@ -144,7 +144,7 @@ docker ps
 docker container ls
 ```
 
-- Check if the To-Do App is running by entering `http://<ec2-host-name>` in a browser.
+- Check if the To-Do App is running by entering `http://<ec2-host-name>` in a browser.   /// containerı sıldik ama image hala localde
 
 - Stop and remove container
 
