@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+    CloudFormation Template for Phonebook Application. This template creates Application Load Balancer with Auto Scaling Group of Amazon Linux 2 (XXXXXXXXXXXXX) EC2 Instances which host Python Flask Web Application. EC2 instances are placed within WebServerSecurityGroup which allows http (80) connections only from ALBSecurityGroup, and ssh (22) from anywhere. RDS DB instance is placed within WebServerSecurityGroup so that Database Server can communicate with Web Servers. Application Load Balancer is placed within ALBSecurityGroup which allows http (80) connections from anywhere. WebServerASG Auto Scaling Group is using the WebServerLT Launch Template in order to spin up instances needed. WebServerLT Launch Template is configured to prepare Python Flask environment on EC2, and to deploy Phonebook Application on Flask Server after downloading the app code from Github repository.
+Parameters:
+  MyVPC:
+    Description: VPC Id of your existing account
+    Type: AWS::EC2::VPC::Id
+
+  KeyName:
+    Description: Please enter your Key pair
+    Type: AWS::EC2::KeyPair::KeyName
+
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP for Application Load Balancer
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref MyVPC
+  
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP for Flask Web Server and SSH for getting into EC2
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !GetAtt ALBSecurityGroup.GroupId
+      VpcId: !Ref MyVPC
+  WebServerLT:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData: 
+        ImageId: ami-0c2b8ca1dad447f8a
+        InstanceType: t2.micro
+        KeyName: !Ref KeyName
+        SecurityGroupIds: 
+          - !GetAtt WebServerSecurityGroup.GroupId
+        TagSpecifications: 
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: !Sub Web Server of ${AWS::StackName} Stack
+        UserData:
+          Fn::Base64:
+            !Sub 
+              - | 
+                #! /bin/bash
+                yum update -y
+                yum install python3 -y
+                pip3 install flask
+                pip3 install flask_mysql
+              - MyDBURI: !GetAtt MyDatabaseServer.Endpoint.Address                
+                echo "${MyDBURI}" > /home/ec2-user/dbserver.endpoint
+                TOKEN="ghp_YcOQowO9YGvly9DwN3kMyO5Itow3ug3U5rcvvUN"
+                FOLDER="https://$TOKEN@raw.github.com/xxxxx-coder/Phonebook-Web-App/blob/main"
+                curl -s --create-dirs -o "/home/ec2-user/templates/index.html" -L $FOLDER/templates/index.html
+                curl -s --create-dirs -o "/home/ec2-user/templates/add-update.html" -L $FOLDER/templates/add-update.html
+                curl -s --create-dirs -o "/home/ec2-user/templates/delete.html" -L $FOLDER/templates/delete.html
+                curl -s --create-dirs -o "/home/ec2-user/app.py" -L $FOLDER/phonebook-app.py
+                python3 /home/ec2-user/app.py
